@@ -4,9 +4,12 @@ import main.Main;
 
 public class Logic{
 
-  // debugging
-  public static String checkGrid(Grid g){
-    return checkRows(g)+" "+rowMatch(g)+"\n"+checkColumns(g)+" "+columnMatch(g);
+  private static final boolean DEBUG = false;
+
+  // returns true if a match is found 
+  // if no match is found return false
+  private static boolean checkGrid(Grid g){
+    return checkRows(g) || checkColumns(g);
   }
 
   // checks if any of the rows have a match
@@ -55,7 +58,7 @@ public class Logic{
   // the column id followed by the row it was found in
   // empty string returned if nothing is found
   // (searches from bottom to top)
-  public static String rowMatch(Grid g){
+  private static String rowMatch(Grid g){
     String rString = "";
     int rowMatch = -1;
     for(int row = g.getHeight()-1; row >= 0; row--){
@@ -91,12 +94,12 @@ public class Logic{
   // the row id followed by the column it was found in
   // empty string returned if nothing is found
   // (searches from left to right)
-  public static String columnMatch(Grid g){
+  private static String columnMatch(Grid g){
     String rString = "";
     int columnMatch = -1;
     for(int col = 0; col < g.getWidth(); col++){
       int streak = 0;
-      for(int row = 1; row < g.getWidth(); row++){
+      for(int row = 1; row < g.getHeight(); row++){
         int num = Main.getColorIdentifier(g.getGrid()[col][row]);
         int prevNum = Main.getColorIdentifier(g.getGrid()[col][row-1]);
         if(num == prevNum){
@@ -122,7 +125,50 @@ public class Logic{
     }
     return "";
   }
+  
+  // keeps cleaning the board until no more matches are on it 
+  public static void removeMatches(Grid g){
+    while(checkGrid(g)){
+      String rowMatchCode = rowMatch(g);
+      String columnMatchCode = columnMatch(g);
+      if(!rowMatchCode.equals("")){
+        removeRowMatch(g, rowMatchCode);
+      }
+      if(!columnMatchCode.equals("")){
+        removeColumnMatch(g, columnMatchCode);
+      }
+    }
+  }
+  
+  // removes the match and shifts the rest down and generates new cells at the top
+  private static void removeRowMatch(Grid g, String code){
+    if(DEBUG){System.out.println("row match:"+code);}
+    String toRemove = code.split(" ")[0];
+    int row = Integer.valueOf(code.split(" ")[1]);
+    
+    for(int i = 0; i < toRemove.length(); i++){
+      int cellToRemove = Integer.valueOf(toRemove.substring(i,i+1));
+      for(int j = 1; j <= row; j++){
+        g.moveCell(row-j, cellToRemove, row-j+1, cellToRemove);
+      }
+      g.generateNewCell(0, cellToRemove);
+    }
+  }
 
-  // TODO: implement cleaning the board until there are no matches
-  // (for new games)
+  // removes the match and shifts the rest down and generates new cells at the top
+  private static void removeColumnMatch(Grid g, String code){
+    if(DEBUG){System.out.println("col match:"+code);}
+    String toRemove = code.split(" ")[0];
+    int col = Integer.valueOf(code.split(" ")[1]);
+    
+    for(int i = 0; i < toRemove.length(); i++){
+      int cellToRemove = Integer.valueOf(toRemove.substring(i, i+1));
+      for(int j = 1; j <= cellToRemove; j++){
+        g.moveCell(cellToRemove-j, col, cellToRemove-j+1, col);
+      }
+      g.generateNewCell(0, col);
+    }
+  }
+
+
 }

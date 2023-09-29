@@ -16,17 +16,29 @@ public class Grid{
 
   private void fillGrid(){
     grid = new Cell[width][height];
-    
     for(int x = 0; x < grid.length; x++){
       for(int y = 0; y < grid[x].length; y++){
-        int rand = (int) ((colorScheme.length) * Math.random());
-        grid[x][y] = new Cell(
-            colorScheme[rand][0],
-            colorScheme[rand][1],
-            colorScheme[rand][2]);
+        grid[x][y] = generateRandomCell();
       }
     }
-    
+  }
+
+  public void moveCell(int rowFrom, int colFrom, int rowTo, int colTo){
+    Cell tempCell = grid[colTo][rowTo];
+    grid[colTo][rowTo] = grid[colFrom][rowFrom];
+    grid[colFrom][rowFrom] = tempCell;
+  }
+
+  public void generateNewCell(int row, int col){
+    grid[col][row] = generateRandomCell();
+  }
+
+  private Cell generateRandomCell(){
+    int rand = (int) ((colorScheme.length) * Math.random());
+    return new Cell(
+        colorScheme[rand][0],
+        colorScheme[rand][1],
+        colorScheme[rand][2]);
   }
 
   public Cell[][] getGrid(){

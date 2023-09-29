@@ -19,10 +19,11 @@ public class Main {
 
   public static void main(String[] args) {
     Scanner scanner;
+    Grid g = new Grid(5, 5, colorScheme);
+    RenderCli.renderGrid(g);
+    Logic.removeMatches(g);
     while(true){
-      Grid g = new Grid(5, 5, colorScheme);
       RenderCli.renderGrid(g);
-      System.out.println(Logic.checkGrid(g));
       scanner = new Scanner(System.in);
       System.out.println(white+"Enter a cell to move `A1` or `q` to quit");
       String input = scanner.nextLine();
