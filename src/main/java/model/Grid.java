@@ -5,17 +5,12 @@ public class Grid{
   private int height;
 
   private Cell[][] grid;
-  //private double[][] colorScheme;
-  
-  private double[][] colorScheme = {
-    {1.0,0.0,0.0},
-    {0.0,1.0,0.0},
-    {0.0,0.0,1.0}
-  };
+  private double[][] colorScheme;
 
-  public Grid(int width, int height){
+  public Grid(int width, int height, double[][] colorScheme){
     this.width = width;
     this.height = height;
+    this.colorScheme = colorScheme;
     fillGrid();
   }
 

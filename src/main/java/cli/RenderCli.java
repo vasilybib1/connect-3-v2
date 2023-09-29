@@ -1,14 +1,20 @@
 package cli;
 
+import main.Main;
 import model.Grid;
 
 public class RenderCli{
-
+  
+  // pre set colors due to limit of rgb rendering in the terminal
+  // colorScheme in main cannot have more than 6 colors to use the cli
   private static String[] colorScheme = {
     "\u001B[30m", // black
     "\u001B[31m", // red
     "\u001B[32m", // green 
-    "\u001B[34m"  // blue
+    "\u001B[34m", // blue
+    "\u001B[35m", // purple
+    "\u001B[33m", // yellow
+    "\u001B[36m"  // cyan
   };
 
   public static void renderGrid(Grid g){
@@ -30,10 +36,7 @@ public class RenderCli{
     char rowLetter = (char) (rowNum+65);
     System.out.print(colorScheme[0]+rowLetter+" ");
     for(int i = 0; i < g.getWidth(); i++){
-      int color = 0;
-      if(g.getGrid()[i][rowNum].toString().equals("1.0 0.0 0.0")){color = 1;}
-      if(g.getGrid()[i][rowNum].toString().equals("0.0 1.0 0.0")){color = 2;}
-      if(g.getGrid()[i][rowNum].toString().equals("0.0 0.0 1.0")){color = 3;}
+      int color = Main.getColorIdentifier(g.getGrid()[i][rowNum]);
       
       if(i == g.getWidth()-1){ System.out.println(colorScheme[color]+color+colorScheme[0]+" |"); }
       else{ System.out.print(colorScheme[color]+color+colorScheme[0]+" | "); }
@@ -43,7 +46,7 @@ public class RenderCli{
     System.out.print(colorScheme[0]+"+");
     for(int i = 0; i < g.getWidth(); i++){
       if(i == g.getWidth()-1){ System.out.println(colorScheme[0]+"---+"); }
-      else{ System.out.print(colorScheme[0]+"---+"); }
+      else{ System.out.print(colorScheme[0]+"---+"+"\u001B[37m"); }
     }
   }
 }

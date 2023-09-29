@@ -1,4 +1,4 @@
-# Connect V2
+# Connect 3 V2
 
 ## Description
 
@@ -9,6 +9,9 @@ The design of this app will be done in three parts. The logic part (handling the
 ## To Run
 
 `git clone https://github.com/vasilybib1/connect-3-v2`
+
 `cd connect-3-v2`
+
 `mvn package`
+
 `java -cp target/connect-v2-1.0-SNAPSHOT.jar main.Main`
