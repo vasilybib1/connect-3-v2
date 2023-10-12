@@ -8,7 +8,7 @@ public class Logic{
 
   // returns true if a match is found 
   // if no match is found return false
-  private static boolean checkGrid(Grid g){
+  public static boolean checkGrid(Grid g){
     return checkRows(g) || checkColumns(g);
   }
 
@@ -167,6 +167,28 @@ public class Logic{
         g.moveCell(cellToRemove-j, col, cellToRemove-j+1, col);
       }
       g.generateNewCell(0, col);
+    }
+  }
+
+  public static boolean checkMove(int rowFrom, int colFrom, int rowTo, int colTo){
+    if (rowFrom == rowTo) {
+      return colFrom == colTo + 1 || colFrom == colTo - 1;
+    } else if (colFrom == colTo) {
+      return rowFrom == rowTo + 1 || rowFrom == rowTo - 1;
+    } else {
+      return false;
+    }
+  }
+
+  public static int removeOneMatch(Grid g){
+    String rowMatchCode = rowMatch(g);
+    if (rowMatchCode != "") {
+      removeRowMatch(g, rowMatchCode);
+      return rowMatchCode.split(" ")[0].length();
+    } else {
+      String columnMatchCode = columnMatch(g);
+      removeColumnMatch(g, columnMatchCode);
+      return columnMatchCode.split(" ")[0].length();
     }
   }
 
