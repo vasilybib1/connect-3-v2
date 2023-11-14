@@ -2,10 +2,13 @@ package main;
 
 import java.util.Scanner;
 
-import cli.RenderCli;
+import ui.cli.RenderCli;
+import ui.opengl.Render;
 import model.Cell;
 import model.Grid;
 import model.Logic;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 public class Main {
 
@@ -18,12 +21,67 @@ public class Main {
     {0.0,0.0,1.0}, // blue
     {1.0,1.0,0.0}  // purple
   };
+  private static boolean loadedFromSave = false;
 
+  public static Grid askToLoadOrNew() {
+    System.out.println(WHITE + "Do you wish to load the old save (`Y` for yes | anything else for no)");
+    try {
+      JsonReader jr = new JsonReader("./data/save.json");
+      System.out.println(WHITE + "Saved score: " + jr.readScore());
+    } catch (Exception e) {
+      System.err.println(e);
+    }
+    Scanner s = new Scanner(System.in);
+    String ans = s.nextLine();
+    Grid g;
+    if (ans.equals("Y")) {
+      loadedFromSave = true;
+      JsonReader jr = new JsonReader("./data/save.json");
+      try {
+        g = jr.read();
+      } catch (Exception e) {
+        System.err.println(e);
+        g = new Grid(BOARD_SIZE, BOARD_SIZE, COLOR_SCHEME);
+        Logic.removeMatches(g);
+      }
+    } else {
+      g = new Grid(BOARD_SIZE, BOARD_SIZE, COLOR_SCHEME);
+      Logic.removeMatches(g);
+    }
+    return g;
+  }
+
+  public static void askToSave(Grid g, int score) {
+    System.out.println(WHITE + "Do you wish to save the current game (last save will be overwritten\n"
+      + "(`Y` for yes | anything else for no)");
+    Scanner s = new Scanner(System.in);
+    String ans = s.nextLine();
+    if (ans.equals("Y")) {
+      JsonWriter jw = new JsonWriter("./data/save.json");
+      try {
+        jw.open();
+        jw.write(g, score);
+        jw.close();
+      } catch (Exception e) {
+        System.err.println(e);
+      }
+    }
+  }
 
   public static void main(String[] args) {
-    int score = 0;
-    Grid g = new Grid(BOARD_SIZE, BOARD_SIZE, COLOR_SCHEME);
-    Logic.removeMatches(g);
+    Grid g = askToLoadOrNew();
+    int score;
+    if (loadedFromSave) {
+      try {
+        JsonReader jr = new JsonReader("./data/save.json");
+        score = jr.readScore();
+      } catch (Exception e) {
+        System.err.println(e);
+        score = 0;
+      }
+    } else {
+      score = 0;
+    }
     System.out.println(WHITE + "To play enter a cell to move `A1` and its location `A0` or `q` to quit");
     while (true) { // main game loop
       Scanner scannerUserInput;
@@ -34,6 +92,8 @@ public class Main {
       try {
         score = processInput(input, g, score);
       } catch (Exception e) {
+        askToSave(g, score);
+        scannerUserInput.close();
         break;
       }
     }

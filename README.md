@@ -12,6 +12,6 @@ The design of this app will be done in three parts. The logic part (handling the
 
 `cd connect-3-v2`
 
-`mvn package`
+`mvn clean compile assembly:single`
 
-`java -cp target/connect-v2-1.0-SNAPSHOT.jar main.Main`
+`java -XstartOnFirstThread -cp target/connect-v2-1.0-SNAPSHOT-jar-with-dependencies.jar main.Main`

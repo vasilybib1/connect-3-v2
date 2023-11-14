@@ -1,5 +1,9 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Grid{
   private int width;
   private int height;
@@ -12,6 +16,13 @@ public class Grid{
     this.height = height;
     this.colorScheme = colorScheme;
     fillGrid();
+  }
+
+  public Grid(Cell[][] grid, double[][] colorScheme) {
+    this.width = grid.length;
+    this.height = grid[0].length;
+    this.colorScheme = colorScheme;
+    this.grid = grid;
   }
 
   private void fillGrid(){
@@ -39,6 +50,25 @@ public class Grid{
         colorScheme[rand][0],
         colorScheme[rand][1],
         colorScheme[rand][2]);
+  }
+
+  public JSONObject toJson(int score) throws JSONException{
+    JSONObject jo = new JSONObject();
+    JSONArray jaGrid = new JSONArray();
+    for (Cell[] cellArr : grid) {
+      JSONArray jaGridCol = new JSONArray();
+      for (Cell c : cellArr) {
+        JSONObject jc = new JSONObject();
+        jc.put("red", c.getRed());
+        jc.put("green", c.getGreen());
+        jc.put("blue", c.getBlue());
+        jaGridCol.put(jc);
+      }
+      jaGrid.put(jaGridCol);
+    }
+    jo.put("grid", jaGrid);
+    jo.put("score", score);
+    return jo;
   }
 
   public Cell[][] getGrid(){
