@@ -1,8 +1,0 @@
-persistence/JsonReader.class
-ui/cli/RenderCli.class
-persistence/JsonWriter.class
-model/Logic.class
-model/Cell.class
-model/Grid.class
-main/Main.class
-ui/opengl/Render.class
